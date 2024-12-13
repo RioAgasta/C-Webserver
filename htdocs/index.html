@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: rgb(240, 240, 240);
+        }
+
+        form, .response {
+            border: 1px solid black;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin-bottom: 8px;
+        }
+
+        form h2, .response h2 {
+            margin: 0;
+        }
+
+        .form-input {
+            margin-bottom: 10px;
+        }
+
+        .form-input label {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-input input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .form-input textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        form button {
+            padding: 5px 10px;
+            background-color: black;
+            color: white;
+            border: 1px solid white;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        form button:hover {
+            background-color: rgb(65, 65, 65);
+            color: white;
+        }
+
+        .response .response-content {
+            border: 1px solid black;
+            border-radius: 8px;
+            padding: 10px 20px;
+            background-color: white;
+        }
+    </style>
+    <title>Client</title>
+</head>
+<body>
+    <form id="form">
+        <h2>Send a message to the server</h2>
+        <div class="form-input">
+            <label for="name">Name:</label>
+            <input maxlength="24" type="text" id="name">
+        </div>
+        <div class="form-input">
+            <label for="message">Message:</label>
+            <textarea maxlength="255" name="message" id="message"></textarea>
+        </div>
+        <button type="submit">Send Message</button>
+    </form>
+
+    <div class="response">
+        <h2>Server Response</h2>
+        <div class="response-content" id="response-content"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('form');
+        const responseContent = document.getElementById('response-content');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:2728/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, message })
+                })
+
+                const result = await response.text();
+                responseContent.textContent = `Server response: ${result}`;
+            } catch (error) {
+                console.log('Error: ', error);
+                responseContent.textContent = 'Error communicating with the server';
+            }
+        })
+    </script>
+</body>
+</html>
